@@ -14,7 +14,7 @@
 1. 打开SillyTavern
 2. 进入设置页面
 3. 点击"扩展"选项卡
-4. 使用扩展安装器，输入此仓库地址进行安装
+4. 使用扩展安装器，输入 `https://github.com/Mooooooon/st-input-helper` 进行安装
 
 ### 使用
 
