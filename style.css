@@ -132,6 +132,84 @@
     text-align: center;
 }
 
+/* 整合的按钮管理样式 */
+#integrated_button_settings {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.integrated-button-row {
+    display: flex;
+    align-items: center;
+    padding: 5px 8px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 5px;
+    background-color: rgba(30, 30, 30, 0.3);
+}
+
+.integrated-button-row input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.button-preview {
+    width: 40px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 5px;
+    margin-right: 8px;
+    filter: grayscale(0.5);
+    font-family: var(--mainFontFamily);
+}
+
+.integrated-button-row label {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.shortcut-input {
+    width: 120px;
+    background-color: var(--SmartThemeBlurTintColor);
+    color: var(--SmartThemeBodyColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    margin-right: 5px;
+    font-family: var(--monoFontFamily);
+    font-size: 12px;
+}
+
+.shortcut-clear-btn {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    color: rgba(255, 100, 100, 0.8);
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shortcut-clear-btn:hover {
+    color: rgba(255, 50, 50, 1);
+}
+
+.shortcut-note {
+    font-size: 12px;
+    color: var(--SmartThemeEmColor);
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
 .shortcut-clear-btn {
     border: 1px solid var(--SmartThemeBorderColor);
     background-color: rgba(180, 0, 0, 0.2);

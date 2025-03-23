@@ -12,111 +12,91 @@
             </div>
             
             <div class="example-extension_block">
-                <b>按钮选项</b>
+                <b>按钮管理</b>
+                <div class="shortcut-note">管理按钮显示和快捷键，点击输入框并按下键盘组合可设置快捷键</div>
             </div>
             
-            <div class="example-extension_block flex-container">
-                <input id="enable_asterisk_btn" type="checkbox" checked />
-                <label for="enable_asterisk_btn">显示双星号按钮：**</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_quotes_btn" type="checkbox" checked />
-                <label for="enable_quotes_btn">显示双引号按钮：""</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_parentheses_btn" type="checkbox" checked />
-                <label for="enable_parentheses_btn">显示圆括号按钮：()</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_book_quotes1_btn" type="checkbox" checked />
-                <label for="enable_book_quotes1_btn">显示直角引号按钮：「」</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_book_quotes2_btn" type="checkbox" checked />
-                <label for="enable_book_quotes2_btn">显示直角引号按钮：『』</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_book_quotes3_btn" type="checkbox" checked />
-                <label for="enable_book_quotes3_btn">显示书名号按钮：《》</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_newline_btn" type="checkbox" checked />
-                <label for="enable_newline_btn">显示换行按钮：⏎</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_user_btn" type="checkbox" checked />
-                <label for="enable_user_btn">显示用户标记按钮：{{U}}</label>
-            </div>
-            
-            <div class="example-extension_block flex-container">
-                <input id="enable_char_btn" type="checkbox" checked />
-                <label for="enable_char_btn">显示角色标记按钮：{{C}}</label>
-            </div>
-
-            <div class="example-extension_block">
-                <b>快捷键设置</b>
-                <div class="shortcut-note">点击文本框并按下快捷键组合</div>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_asterisk">双星号：</label>
-                <input id="shortcut_asterisk" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_asterisk">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_quotes">双引号：</label>
-                <input id="shortcut_quotes" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_quotes">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_parentheses">圆括号：</label>
-                <input id="shortcut_parentheses" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_parentheses">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_book_quotes1">直角引号「」：</label>
-                <input id="shortcut_book_quotes1" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_book_quotes1">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_book_quotes2">直角引号『』：</label>
-                <input id="shortcut_book_quotes2" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_book_quotes2">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_book_quotes3">书名号《》：</label>
-                <input id="shortcut_book_quotes3" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_book_quotes3">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_newline">换行：</label>
-                <input id="shortcut_newline" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_newline">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_user">用户标记：</label>
-                <input id="shortcut_user" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_user">清除</button>
-            </div>
-            
-            <div class="example-extension_block flex-container shortcut-container">
-                <label for="shortcut_char">角色标记：</label>
-                <input id="shortcut_char" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
-                <button class="shortcut-clear-btn" data-target="shortcut_char">清除</button>
+            <div id="integrated_button_settings">
+                <!-- 星号 -->
+                <div class="integrated-button-row">
+                    <input id="enable_asterisk_btn" type="checkbox" checked />
+                    <div class="button-preview">**</div>
+                    <label for="enable_asterisk_btn">双星号</label>
+                    <input id="shortcut_asterisk" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_asterisk">×</button>
+                </div>
+                
+                <!-- 引号 -->
+                <div class="integrated-button-row">
+                    <input id="enable_quotes_btn" type="checkbox" checked />
+                    <div class="button-preview">""</div>
+                    <label for="enable_quotes_btn">双引号</label>
+                    <input id="shortcut_quotes" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_quotes">×</button>
+                </div>
+                
+                <!-- 圆括号 -->
+                <div class="integrated-button-row">
+                    <input id="enable_parentheses_btn" type="checkbox" checked />
+                    <div class="button-preview">()</div>
+                    <label for="enable_parentheses_btn">圆括号</label>
+                    <input id="shortcut_parentheses" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_parentheses">×</button>
+                </div>
+                
+                <!-- 直角引号1 -->
+                <div class="integrated-button-row">
+                    <input id="enable_book_quotes1_btn" type="checkbox" checked />
+                    <div class="button-preview">「」</div>
+                    <label for="enable_book_quotes1_btn">直角引号</label>
+                    <input id="shortcut_book_quotes1" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_book_quotes1">×</button>
+                </div>
+                
+                <!-- 直角引号2 -->
+                <div class="integrated-button-row">
+                    <input id="enable_book_quotes2_btn" type="checkbox" checked />
+                    <div class="button-preview">『』</div>
+                    <label for="enable_book_quotes2_btn">直角引号</label>
+                    <input id="shortcut_book_quotes2" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_book_quotes2">×</button>
+                </div>
+                
+                <!-- 书名号 -->
+                <div class="integrated-button-row">
+                    <input id="enable_book_quotes3_btn" type="checkbox" checked />
+                    <div class="button-preview">《》</div>
+                    <label for="enable_book_quotes3_btn">书名号</label>
+                    <input id="shortcut_book_quotes3" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_book_quotes3">×</button>
+                </div>
+                
+                <!-- 换行 -->
+                <div class="integrated-button-row">
+                    <input id="enable_newline_btn" type="checkbox" checked />
+                    <div class="button-preview">⏎</div>
+                    <label for="enable_newline_btn">换行</label>
+                    <input id="shortcut_newline" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_newline">×</button>
+                </div>
+                
+                <!-- 用户标记 -->
+                <div class="integrated-button-row">
+                    <input id="enable_user_btn" type="checkbox" checked />
+                    <div class="button-preview">{{U}}</div>
+                    <label for="enable_user_btn">用户标记</label>
+                    <input id="shortcut_user" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_user">×</button>
+                </div>
+                
+                <!-- 角色标记 -->
+                <div class="integrated-button-row">
+                    <input id="enable_char_btn" type="checkbox" checked />
+                    <div class="button-preview">{{C}}</div>
+                    <label for="enable_char_btn">角色标记</label>
+                    <input id="shortcut_char" class="shortcut-input" type="text" placeholder="无快捷键" readonly />
+                    <button class="shortcut-clear-btn" data-target="shortcut_char">×</button>
+                </div>
             </div>
 
             <hr class="sysHR" />
