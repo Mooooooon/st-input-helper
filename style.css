@@ -230,3 +230,38 @@
     margin-bottom: 8px;
     font-style: italic;
 }
+
+/* 拖拽排序相关样式 */
+.drag-handle {
+    cursor: grab;
+    margin-right: 8px;
+    color: var(--SmartThemeEmColor);
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.drag-handle:hover {
+    opacity: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.integrated-button-row {
+    cursor: default;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.integrated-button-row.ui-sortable-helper {
+    background-color: rgba(50, 50, 80, 0.6);
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.integrated-button-row.ui-sortable-placeholder {
+    visibility: visible !important;
+    background-color: rgba(30, 30, 50, 0.3);
+    border: 1px dashed var(--SmartThemeBorderColor);
+    height: 38px;
+}

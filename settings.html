@@ -14,11 +14,13 @@
             <div class="example-extension_block">
                 <b>按钮管理</b>
                 <div class="shortcut-note">管理按钮显示和快捷键，点击输入框并按下键盘组合可设置快捷键</div>
+                <div class="shortcut-note">拖动排序按钮调整工具栏中的显示顺序</div>
             </div>
             
             <div id="integrated_button_settings">
                 <!-- 星号 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="asterisk">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_asterisk_btn" type="checkbox" checked />
                     <div class="button-preview">**</div>
                     <label for="enable_asterisk_btn">双星号</label>
@@ -27,7 +29,8 @@
                 </div>
                 
                 <!-- 引号 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="quotes">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_quotes_btn" type="checkbox" checked />
                     <div class="button-preview">""</div>
                     <label for="enable_quotes_btn">双引号</label>
@@ -36,7 +39,8 @@
                 </div>
                 
                 <!-- 圆括号 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="parentheses">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_parentheses_btn" type="checkbox" checked />
                     <div class="button-preview">()</div>
                     <label for="enable_parentheses_btn">圆括号</label>
@@ -45,7 +49,8 @@
                 </div>
                 
                 <!-- 直角引号1 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="bookQuotes1">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_book_quotes1_btn" type="checkbox" checked />
                     <div class="button-preview">「」</div>
                     <label for="enable_book_quotes1_btn">直角引号</label>
@@ -54,7 +59,8 @@
                 </div>
                 
                 <!-- 直角引号2 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="bookQuotes2">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_book_quotes2_btn" type="checkbox" checked />
                     <div class="button-preview">『』</div>
                     <label for="enable_book_quotes2_btn">直角引号</label>
@@ -63,7 +69,8 @@
                 </div>
                 
                 <!-- 书名号 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="bookQuotes3">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_book_quotes3_btn" type="checkbox" checked />
                     <div class="button-preview">《》</div>
                     <label for="enable_book_quotes3_btn">书名号</label>
@@ -72,7 +79,8 @@
                 </div>
                 
                 <!-- 换行 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="newline">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_newline_btn" type="checkbox" checked />
                     <div class="button-preview">⏎</div>
                     <label for="enable_newline_btn">换行</label>
@@ -81,7 +89,8 @@
                 </div>
                 
                 <!-- 用户标记 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="user">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_user_btn" type="checkbox" checked />
                     <div class="button-preview">{{U}}</div>
                     <label for="enable_user_btn">用户标记</label>
@@ -90,7 +99,8 @@
                 </div>
                 
                 <!-- 角色标记 -->
-                <div class="integrated-button-row">
+                <div class="integrated-button-row" data-button-key="char">
+                    <span class="drag-handle menu-handle">&#9776;</span>
                     <input id="enable_char_btn" type="checkbox" checked />
                     <div class="button-preview">{{C}}</div>
                     <label for="enable_char_btn">角色标记</label>

@@ -33,7 +33,19 @@ const defaultSettings = {
         newline: "",
         user: "",
         char: ""
-    }
+    },
+    // 添加默认的按钮顺序
+    buttonOrder: [
+        'asterisk',
+        'quotes',
+        'parentheses',
+        'bookQuotes1',
+        'bookQuotes2',
+        'bookQuotes3',
+        'newline',
+        'user',
+        'char'
+    ]
 };
 
 // 快捷键映射表
@@ -65,6 +77,11 @@ async function loadSettings() {
     if (!extension_settings[extensionName].shortcuts) {
         extension_settings[extensionName].shortcuts = defaultSettings.shortcuts;
     }
+    
+    // 兼容旧版本设置 - 按钮顺序
+    if (!extension_settings[extensionName].buttonOrder) {
+        extension_settings[extensionName].buttonOrder = defaultSettings.buttonOrder;
+    }
 
     // 更新UI中的设置
     $("#enable_input_helper").prop("checked", extension_settings[extensionName].enabled);
@@ -87,7 +104,93 @@ async function loadSettings() {
         $(`#shortcut_${key}`).val(shortcuts[key] || "");
     }
     
+    // 更新按钮顺序
+    updateButtonsOrder();
+    
     updateButtonVisibility();
+}
+
+// 更新设置面板中的按钮顺序
+function updateButtonsOrder() {
+    const buttonOrder = extension_settings[extensionName].buttonOrder;
+    if (!buttonOrder || buttonOrder.length === 0) return;
+    
+    // 根据保存的顺序重新排列设置面板中的按钮
+    const container = $("#integrated_button_settings");
+    
+    buttonOrder.forEach(key => {
+        const buttonRow = $(`.integrated-button-row[data-button-key="${key}"]`);
+        if (buttonRow.length) {
+            container.append(buttonRow);
+        }
+    });
+}
+
+// 初始化按钮排序
+function initSortable() {
+    try {
+        if ($("#integrated_button_settings").sortable) {
+            $("#integrated_button_settings").sortable({
+                handle: ".drag-handle",
+                axis: "y",
+                delay: 150,
+                stop: function() {
+                    // 获取新的排序
+                    const newOrder = [];
+                    $("#integrated_button_settings .integrated-button-row").each(function() {
+                        const buttonKey = $(this).attr("data-button-key");
+                        newOrder.push(buttonKey);
+                    });
+                    
+                    // 保存新排序到设置
+                    extension_settings[extensionName].buttonOrder = newOrder;
+                    saveSettingsDebounced();
+                    
+                    // 更新工具栏按钮顺序
+                    updateToolbarButtonOrder();
+                }
+            });
+        } else {
+            console.warn("jQuery UI Sortable 不可用，无法启用拖拽排序功能");
+        }
+    } catch (error) {
+        console.error("初始化按钮排序功能失败:", error);
+    }
+}
+
+// 更新工具栏按钮顺序
+function updateToolbarButtonOrder() {
+    const buttonOrder = extension_settings[extensionName].buttonOrder || [];
+    if (buttonOrder.length === 0) return;
+    
+    const toolbar = $("#input_helper_toolbar");
+    if (toolbar.length === 0) return;
+    
+    // 按照保存的顺序重新排列工具栏按钮
+    buttonOrder.forEach(key => {
+        const buttonId = getButtonIdFromKey(key);
+        const button = $(`#${buttonId}`);
+        if (button.length && extension_settings[extensionName].buttons[key] !== false) {
+            toolbar.append(button);
+        }
+    });
+}
+
+// 从按钮键名获取按钮ID
+function getButtonIdFromKey(key) {
+    const keyToId = {
+        'asterisk': 'input_asterisk_btn',
+        'quotes': 'input_quotes_btn',
+        'parentheses': 'input_parentheses_btn',
+        'bookQuotes1': 'input_book_quotes1_btn',
+        'bookQuotes2': 'input_book_quotes2_btn',
+        'bookQuotes3': 'input_book_quotes3_btn',
+        'newline': 'input_newline_btn',
+        'user': 'input_user_btn',
+        'char': 'input_char_btn'
+    };
+    
+    return keyToId[key] || '';
 }
 
 // 更新按钮可见性
@@ -111,6 +214,9 @@ function updateButtonVisibility() {
         $("#input_helper_toolbar").hide();
     } else if (extension_settings[extensionName].enabled) {
         $("#input_helper_toolbar").show();
+        
+        // 更新按钮顺序
+        updateToolbarButtonOrder();
     }
 }
 
@@ -541,6 +647,9 @@ jQuery(async () => {
     
     // 设置快捷键输入框
     setupShortcutInputs();
+    
+    // 初始化排序功能
+    initSortable();
     
     // 注册全局快捷键事件
     $(document).on("keydown", handleGlobalShortcuts);
