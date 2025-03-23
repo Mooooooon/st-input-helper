@@ -112,11 +112,11 @@ function insertAsterisk() {
     const selectedText = text.substring(startPos, endPos);
     const afterText = text.substring(endPos);
     
-    // 插入星号
-    const newText = beforeText + "*" + afterText;
+    // 插入两个星号并将光标放在中间
+    const newText = beforeText + "**" + afterText;
     textarea.val(newText);
     
-    // 设置光标位置在星号之后
+    // 设置光标位置在星号中间
     setTimeout(() => {
         textarea.prop("selectionStart", startPos + 1);
         textarea.prop("selectionEnd", startPos + 1);
@@ -134,7 +134,8 @@ jQuery(async () => {
     
     // 加载输入工具栏HTML
     const toolbarHtml = await $.get(`${extensionFolderPath}/toolbar.html`);
-    $("#send_form").prepend(toolbarHtml);
+    // 将工具栏插入到 #qr--bar 下方
+    $("#qr--bar").after(toolbarHtml);
     
     // 注册事件监听
     $("#insert_quotes_button").on("click", insertQuotes);

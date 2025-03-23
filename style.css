@@ -23,8 +23,10 @@
 /* 发送消息按钮旁的工具栏样式 */
 .input-helper-toolbar {
     display: flex;
-    margin-right: 8px;
     align-items: center;
+    justify-content: center;  /* 居中显示 */
+    margin: 8px auto;  /* 上下间距，左右自动居中 */
+    width: 100%;
 }
 
 .input-helper-btn {
