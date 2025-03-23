@@ -3,17 +3,21 @@
 <div class="example-extension-settings">
     <div class="inline-drawer">
         <div class="inline-drawer-toggle inline-drawer-header">
-            <b>Extension Example</b>
+            <b>输入助手</b>
             <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
         </div>
         <div class="inline-drawer-content">
             <div class="example-extension_block flex-container">
-                <input id="my_button" class="menu_button" type="submit" value="Example Button" />
+                <input id="insert_quotes_button" class="menu_button" type="submit" value="插入引号" title="在输入框插入双引号并将光标放置在中间"/>
             </div>
 
             <div class="example-extension_block flex-container">
-                <input id="example_setting" type="checkbox" />
-                <label for="example_setting">This is an example</label>
+                <input id="new_line_button" class="menu_button" type="submit" value="换行" title="在当前位置插入换行符"/>
+            </div>
+
+            <div class="example-extension_block flex-container">
+                <input id="enable_input_helper" type="checkbox" />
+                <label for="enable_input_helper">启用输入助手</label>
             </div>
 
             <hr class="sysHR" />

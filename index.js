@@ -7,57 +7,109 @@ import { extension_settings, getContext, loadExtensionSettings } from "../../../
 //You'll likely need to import some other functions from the main script
 import { saveSettingsDebounced } from "../../../../script.js";
 
-// Keep track of where your extension is located, name should match repo name
-const extensionName = "st-extension-example";
+// 设置插件名称和路径
+const extensionName = "silly-tavern-input-helper";
 const extensionFolderPath = `scripts/extensions/third-party/${extensionName}`;
-const extensionSettings = extension_settings[extensionName];
-const defaultSettings = {};
+const defaultSettings = {
+    enabled: true
+};
 
-
- 
-// Loads the extension settings if they exist, otherwise initializes them to the defaults.
+// 加载插件设置
 async function loadSettings() {
-  //Create the settings if they don't exist
-  extension_settings[extensionName] = extension_settings[extensionName] || {};
-  if (Object.keys(extension_settings[extensionName]).length === 0) {
-    Object.assign(extension_settings[extensionName], defaultSettings);
-  }
+    extension_settings[extensionName] = extension_settings[extensionName] || {};
+    if (Object.keys(extension_settings[extensionName]).length === 0) {
+        Object.assign(extension_settings[extensionName], defaultSettings);
+    }
 
-  // Updating settings in the UI
-  $("#example_setting").prop("checked", extension_settings[extensionName].example_setting).trigger("input");
+    // 更新UI中的设置
+    $("#enable_input_helper").prop("checked", extension_settings[extensionName].enabled).trigger("input");
 }
 
-// This function is called when the extension settings are changed in the UI
-function onExampleInput(event) {
-  const value = Boolean($(event.target).prop("checked"));
-  extension_settings[extensionName].example_setting = value;
-  saveSettingsDebounced();
+// 开关设置变更响应
+function onEnableInputChange(event) {
+    const value = Boolean($(event.target).prop("checked"));
+    extension_settings[extensionName].enabled = value;
+    saveSettingsDebounced();
+    
+    if (value) {
+        toastr.success("输入助手已启用");
+    } else {
+        toastr.warning("输入助手已禁用");
+    }
 }
 
-// This function is called when the button is clicked
-function onButtonClick() {
-  // You can do whatever you want here
-  // Let's make a popup appear with the checked setting
-  toastr.info(
-    `The checkbox is ${extension_settings[extensionName].example_setting ? "checked" : "not checked"}`,
-    "A popup appeared because you clicked the button!"
-  );
+// 获取输入框元素
+function getMessageInput() {
+    return $("#send_textarea, #prompt_textarea").first();
 }
 
-// This function is called when the extension is loaded
+// 插入引号功能
+function insertQuotes() {
+    if (!extension_settings[extensionName].enabled) return;
+    
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 插入双引号并将光标放在中间
+    const newText = beforeText + "\"\"" + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置在双引号中间
+    setTimeout(() => {
+        textarea.prop("selectionStart", startPos + 1);
+        textarea.prop("selectionEnd", startPos + 1);
+        textarea.focus();
+    }, 0);
+    
+    toastr.info("已插入引号");
+}
+
+// 插入换行功能
+function insertNewLine() {
+    if (!extension_settings[extensionName].enabled) return;
+    
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 在当前位置插入换行符
+    const newText = beforeText + "\n" + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置在换行符之后
+    setTimeout(() => {
+        textarea.prop("selectionStart", startPos + 1);
+        textarea.prop("selectionEnd", startPos + 1);
+        textarea.focus();
+    }, 0);
+    
+    toastr.info("已插入换行");
+}
+
+// 初始化插件
 jQuery(async () => {
-  // This is an example of loading HTML from a file
-  const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
-
-  // Append settingsHtml to extensions_settings
-  // extension_settings and extensions_settings2 are the left and right columns of the settings menu
-  // Left should be extensions that deal with system functions and right should be visual/UI related 
-  $("#extensions_settings").append(settingsHtml);
-
-  // These are examples of listening for events
-  $("#my_button").on("click", onButtonClick);
-  $("#example_setting").on("input", onExampleInput);
-
-  // Load settings when starting things up (if you have any)
-  loadSettings();
+    // 加载HTML
+    const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
+    $("#extensions_settings").append(settingsHtml);
+    
+    // 注册事件监听
+    $("#insert_quotes_button").on("click", insertQuotes);
+    $("#new_line_button").on("click", insertNewLine);
+    $("#enable_input_helper").on("input", onEnableInputChange);
+    
+    // 加载设置
+    await loadSettings();
+    
+    console.log("输入助手插件已加载");
 });

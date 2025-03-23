@@ -1,33 +1,38 @@
-# SillyTavern Extension Example
+# SillyTavern 输入助手
 
-*Provide a brief description of how your extension works, what problem it aims to solve.*
+*这是一个简单的SillyTavern输入助手插件，用于提高文本输入效率。*
 
-## Features
+## 功能
 
-*Describe some of the main selling points of your extension.*
+* **插入引号**：一键在输入框插入双引号，并自动将光标定位在引号中间，方便输入引用内容。
+* **快速换行**：一键在当前光标位置插入换行符，不影响已有内容，提高排版效率。
 
-## Installation and Usage
+## 安装和使用
 
-### Installation
+### 安装
 
-*In most cases, this should just be using ST's inbuilt extension installer.* 
+1. 打开SillyTavern
+2. 进入设置页面
+3. 点击"扩展"选项卡
+4. 使用扩展安装器，输入此仓库地址进行安装
 
-### Usage
+### 使用
 
-*Explain how to use this extension.*
+1. 安装完成后，在设置页面的"扩展"选项卡中找到"输入助手"面板
+2. 点击"插入引号"按钮，在输入框中插入双引号并将光标置于中间
+3. 点击"换行"按钮，在当前光标位置插入换行符
+4. 使用"启用输入助手"开关可以启用或禁用此功能
 
-## Prerequisites
+## 兼容性
 
-*Specify the version of ST necessary here.*
+* 需要SillyTavern v1.9.0或更高版本
 
-## Support and Contributions
+## 支持和贡献
 
-*Where should someone ask for support?*
+如有问题或建议，请在GitHub仓库提交issue或联系作者。
 
-*Consider including your own contact info for help/questions.*
+欢迎提交Pull Request来改进这个插件。
 
-*How can people help add to this extension?*
+## 许可证
 
-## License
-
-*Be cool, use an open source license.*
+MIT License

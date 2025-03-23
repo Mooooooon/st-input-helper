@@ -1,1 +1,21 @@
 /* All style elements for your extension go here */
+
+.example-extension_block {
+    margin-bottom: 10px;
+}
+
+#insert_quotes_button, #new_line_button {
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#insert_quotes_button:hover, #new_line_button:hover {
+    background-color: rgba(100, 100, 240, 0.2);
+}
+
+.example-extension-settings .inline-drawer-header {
+    cursor: pointer;
+}
