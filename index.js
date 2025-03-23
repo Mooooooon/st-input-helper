@@ -99,16 +99,53 @@ function insertNewLine() {
     toastr.info("已在行末插入换行");
 }
 
+// 插入星号功能
+function insertAsterisk() {
+    if (!extension_settings[extensionName].enabled) return;
+    
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 插入星号
+    const newText = beforeText + "*" + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置在星号之后
+    setTimeout(() => {
+        textarea.prop("selectionStart", startPos + 1);
+        textarea.prop("selectionEnd", startPos + 1);
+        textarea.focus();
+    }, 0);
+    
+    toastr.info("已插入星号");
+}
+
 // 初始化插件
 jQuery(async () => {
     // 加载HTML
     const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
-    $("#extensions_settings").append(settingsHtml);
+    $("#extensions_settings2").append(settingsHtml);
+    
+    // 加载输入工具栏HTML
+    const toolbarHtml = await $.get(`${extensionFolderPath}/toolbar.html`);
+    $("#send_form").prepend(toolbarHtml);
     
     // 注册事件监听
     $("#insert_quotes_button").on("click", insertQuotes);
     $("#new_line_button").on("click", insertNewLine);
+    $("#insert_asterisk_button").on("click", insertAsterisk);
     $("#enable_input_helper").on("input", onEnableInputChange);
+    
+    // 工具栏按钮监听
+    $("#input_asterisk_btn").on("click", insertAsterisk);
+    $("#input_quotes_btn").on("click", insertQuotes);
+    $("#input_newline_btn").on("click", insertNewLine);
     
     // 加载设置
     await loadSettings();

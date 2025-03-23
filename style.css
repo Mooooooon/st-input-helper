@@ -19,3 +19,43 @@
 .example-extension-settings .inline-drawer-header {
     cursor: pointer;
 }
+
+/* 发送消息按钮旁的工具栏样式 */
+.input-helper-toolbar {
+    display: flex;
+    margin-right: 8px;
+    align-items: center;
+}
+
+.input-helper-btn {
+    background-color: var(--SmartThemeBlendColor5);
+    border: 1px solid var(--SmartThemeBorderColor);
+    color: var(--SmartThemeBodyColor);
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    margin: 0 2px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.input-helper-btn:hover {
+    background-color: var(--SmartThemeBlendColor7);
+}
+
+/* 添加星号按钮样式 */
+#insert_asterisk_button, #insert_asterisk_button:hover {
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#insert_asterisk_button:hover {
+    background-color: rgba(100, 100, 240, 0.2);
+}
