@@ -265,3 +265,45 @@
     border: 1px dashed var(--SmartThemeBorderColor);
     height: 38px;
 }
+
+/* 移动设备优化 */
+@media (max-width: 768px) {
+    .input-helper-toolbar {
+        padding: 5px 5px;
+        margin: 8px auto;
+        /* 增加触摸区域大小，改善移动设备体验 */
+        touch-action: manipulation;
+    }
+    
+    .input-helper-btn {
+        width: 38px;  /* 略微增大触摸区域 */
+        height: 38px;
+        margin: 0 2px;
+        font-size: 14px;
+        /* 更好的触摸反馈 */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        user-select: none;
+    }
+    
+    /* 移动设备上禁用悬停效果，改用激活状态 */
+    .input-helper-btn:hover {
+        filter: grayscale(0.5);
+        background-color: var(--SmartThemeBlurTintColor);
+    }
+    
+    .input-helper-btn:active {
+        filter: grayscale(0);
+        background-color: var(--SmartThemeChatTintColor, var(--grey50));
+        transform: scale(0.95);
+    }
+}
+
+/* 防止移动设备上的按钮导致输入框失焦 */
+.prevent-keyboard-hide {
+    pointer-events: none;  /* 让按钮容器不接收指针事件 */
+}
+
+.prevent-keyboard-hide > button {
+    pointer-events: auto;  /* 让里面的按钮可以接收指针事件 */
+}

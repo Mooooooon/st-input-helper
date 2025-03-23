@@ -591,7 +591,7 @@ function handleGlobalShortcuts(e) {
 
 // 初始化插件
 jQuery(async () => {
-    // 加载HTML - 修改文件名从example.html到settings.html
+    // 加载HTML
     const settingsHtml = await $.get(`${extensionFolderPath}/settings.html`);
     $("#extensions_settings2").append(settingsHtml);
     
@@ -613,22 +613,56 @@ jQuery(async () => {
         $("#file_form").after(toolbarHtml);
     }
     
+    // 移动设备优化：防止按钮点击导致键盘消失和重新出现
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        // 在移动设备上，阻止工具栏按钮的默认行为，避免输入框失焦
+        $("#input_helper_toolbar").on("mousedown touchstart", function(e) {
+            e.preventDefault(); // 阻止默认行为
+            // 不阻止冒泡，以便点击事件仍然被处理
+        });
+        
+        // 为所有按钮添加触摸开始事件处理，防止键盘隐藏
+        $("#input_helper_toolbar button").on("touchstart", function(e) {
+            e.preventDefault(); // 阻止默认触摸行为
+            const btnId = $(this).attr("id");
+            
+            // 基于按钮ID调用相应的函数，保持原有功能不变
+            if (btnId === "input_asterisk_btn") insertAsterisk();
+            else if (btnId === "input_quotes_btn") insertQuotes();
+            else if (btnId === "input_parentheses_btn") insertParentheses();
+            else if (btnId === "input_book_quotes1_btn") insertBookQuotes1();
+            else if (btnId === "input_book_quotes2_btn") insertBookQuotes2();
+            else if (btnId === "input_book_quotes3_btn") insertBookQuotes3();
+            else if (btnId === "input_newline_btn") insertNewLine();
+            else if (btnId === "input_user_btn") insertUserTag();
+            else if (btnId === "input_char_btn") insertCharTag();
+            
+            // 确保输入框保持焦点状态
+            setTimeout(() => {
+                getMessageInput().focus();
+            }, 10);
+            
+            return false; // 防止事件进一步传播
+        });
+    } else {
+        // 桌面端使用原有的点击事件
+        $("#input_asterisk_btn").on("click", insertAsterisk);
+        $("#input_quotes_btn").on("click", insertQuotes);
+        $("#input_newline_btn").on("click", insertNewLine);
+        $("#input_user_btn").on("click", insertUserTag);
+        $("#input_char_btn").on("click", insertCharTag);
+        $("#input_parentheses_btn").on("click", insertParentheses);
+        $("#input_book_quotes1_btn").on("click", insertBookQuotes1);
+        $("#input_book_quotes2_btn").on("click", insertBookQuotes2);
+        $("#input_book_quotes3_btn").on("click", insertBookQuotes3);
+    }
+    
     // 注册事件监听
     $("#insert_quotes_button").on("click", insertQuotes);
     $("#new_line_button").on("click", insertNewLine);
     $("#insert_asterisk_button").on("click", insertAsterisk);
     $("#enable_input_helper").on("input", onEnableInputChange);
-    
-    // 工具栏按钮监听
-    $("#input_asterisk_btn").on("click", insertAsterisk);
-    $("#input_quotes_btn").on("click", insertQuotes);
-    $("#input_newline_btn").on("click", insertNewLine);
-    $("#input_user_btn").on("click", insertUserTag);
-    $("#input_char_btn").on("click", insertCharTag);
-    $("#input_parentheses_btn").on("click", insertParentheses);
-    $("#input_book_quotes1_btn").on("click", insertBookQuotes1);
-    $("#input_book_quotes2_btn").on("click", insertBookQuotes2);
-    $("#input_book_quotes3_btn").on("click", insertBookQuotes3); // 新增按钮监听
     
     // 注册设置变更事件监听
     $("#enable_input_helper").on("input", onEnableInputChange);
@@ -637,7 +671,7 @@ jQuery(async () => {
     $("#enable_parentheses_btn").on("input", onButtonVisibilityChange("parentheses"));
     $("#enable_book_quotes1_btn").on("input", onButtonVisibilityChange("bookQuotes1"));
     $("#enable_book_quotes2_btn").on("input", onButtonVisibilityChange("bookQuotes2"));
-    $("#enable_book_quotes3_btn").on("input", onButtonVisibilityChange("bookQuotes3")); // 新增按钮设置监听
+    $("#enable_book_quotes3_btn").on("input", onButtonVisibilityChange("bookQuotes3"));
     $("#enable_newline_btn").on("input", onButtonVisibilityChange("newline"));
     $("#enable_user_btn").on("input", onButtonVisibilityChange("user"));
     $("#enable_char_btn").on("input", onButtonVisibilityChange("char"));
