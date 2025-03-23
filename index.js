@@ -75,26 +75,28 @@ function insertNewLine() {
     if (!extension_settings[extensionName].enabled) return;
     
     const textarea = getMessageInput();
-    const startPos = textarea.prop("selectionStart");
-    const endPos = textarea.prop("selectionEnd");
     const text = textarea.val();
+    const cursorPos = textarea.prop("selectionStart");
     
-    const beforeText = text.substring(0, startPos);
-    const selectedText = text.substring(startPos, endPos);
-    const afterText = text.substring(endPos);
+    // 查找当前行的末尾位置
+    let lineEnd = text.indexOf("\n", cursorPos);
+    if (lineEnd === -1) {
+        // 如果没有找到换行符，说明光标在最后一行，使用文本长度作为行末
+        lineEnd = text.length;
+    }
     
-    // 在当前位置插入换行符
-    const newText = beforeText + "\n" + afterText;
+    // 在行末插入换行符
+    const newText = text.substring(0, lineEnd) + "\n" + text.substring(lineEnd);
     textarea.val(newText);
     
-    // 设置光标位置在换行符之后
+    // 设置光标位置在新插入的换行符之后
     setTimeout(() => {
-        textarea.prop("selectionStart", startPos + 1);
-        textarea.prop("selectionEnd", startPos + 1);
+        textarea.prop("selectionStart", lineEnd + 1);
+        textarea.prop("selectionEnd", lineEnd + 1);
         textarea.focus();
     }, 0);
     
-    toastr.info("已插入换行");
+    toastr.info("已在行末插入换行");
 }
 
 // 初始化插件
