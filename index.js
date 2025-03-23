@@ -18,6 +18,7 @@ const defaultSettings = {
         parentheses: true,
         bookQuotes1: true,
         bookQuotes2: true,
+        bookQuotes3: true, // 新增《》按钮设置
         newline: true,
         user: true,
         char: true
@@ -46,6 +47,7 @@ async function loadSettings() {
     $("#enable_parentheses_btn").prop("checked", buttons.parentheses !== false);
     $("#enable_book_quotes1_btn").prop("checked", buttons.bookQuotes1 !== false);
     $("#enable_book_quotes2_btn").prop("checked", buttons.bookQuotes2 !== false);
+    $("#enable_book_quotes3_btn").prop("checked", buttons.bookQuotes3 !== false); // 新增书名号按钮设置
     $("#enable_newline_btn").prop("checked", buttons.newline !== false);
     $("#enable_user_btn").prop("checked", buttons.user !== false);
     $("#enable_char_btn").prop("checked", buttons.char !== false);
@@ -63,6 +65,7 @@ function updateButtonVisibility() {
     $("#input_parentheses_btn").toggle(buttons.parentheses !== false);
     $("#input_book_quotes1_btn").toggle(buttons.bookQuotes1 !== false);
     $("#input_book_quotes2_btn").toggle(buttons.bookQuotes2 !== false);
+    $("#input_book_quotes3_btn").toggle(buttons.bookQuotes3 !== false); // 新增书名号按钮
     $("#input_newline_btn").toggle(buttons.newline !== false);
     $("#input_user_btn").toggle(buttons.user !== false);
     $("#input_char_btn").toggle(buttons.char !== false);
@@ -307,10 +310,35 @@ function insertBookQuotes2() {
     }, 0);
 }
 
+// 插入书名号《》功能
+function insertBookQuotes3() {
+    if (!extension_settings[extensionName].enabled) return;
+    
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 插入书名号并将光标放在中间
+    const newText = beforeText + "《》" + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置在书名号中间
+    setTimeout(() => {
+        textarea.prop("selectionStart", startPos + 1);
+        textarea.prop("selectionEnd", startPos + 1);
+        textarea.focus();
+    }, 0);
+}
+
 // 初始化插件
 jQuery(async () => {
-    // 加载HTML
-    const settingsHtml = await $.get(`${extensionFolderPath}/example.html`);
+    // 加载HTML - 修改文件名从example.html到settings.html
+    const settingsHtml = await $.get(`${extensionFolderPath}/settings.html`);
     $("#extensions_settings2").append(settingsHtml);
     
     // 加载输入工具栏HTML
@@ -346,6 +374,7 @@ jQuery(async () => {
     $("#input_parentheses_btn").on("click", insertParentheses);
     $("#input_book_quotes1_btn").on("click", insertBookQuotes1);
     $("#input_book_quotes2_btn").on("click", insertBookQuotes2);
+    $("#input_book_quotes3_btn").on("click", insertBookQuotes3); // 新增按钮监听
     
     // 注册设置变更事件监听
     $("#enable_input_helper").on("input", onEnableInputChange);
@@ -354,6 +383,7 @@ jQuery(async () => {
     $("#enable_parentheses_btn").on("input", onButtonVisibilityChange("parentheses"));
     $("#enable_book_quotes1_btn").on("input", onButtonVisibilityChange("bookQuotes1"));
     $("#enable_book_quotes2_btn").on("input", onButtonVisibilityChange("bookQuotes2"));
+    $("#enable_book_quotes3_btn").on("input", onButtonVisibilityChange("bookQuotes3")); // 新增按钮设置监听
     $("#enable_newline_btn").on("input", onButtonVisibilityChange("newline"));
     $("#enable_user_btn").on("input", onButtonVisibilityChange("user"));
     $("#enable_char_btn").on("input", onButtonVisibilityChange("char"));
