@@ -138,13 +138,16 @@ jQuery(async () => {
     // 加载输入工具栏HTML
     const toolbarHtml = await $.get(`${extensionFolderPath}/toolbar.html`);
     
-    // 将工具栏插入到 #qr--bar 下方
+    // 将工具栏插入到 #qr--bar 下方，并确保正确的视觉顺序
     if ($("#qr--bar").length) {
-        // 如果存在QR Bar，则插入其后
+        // 如果存在QR Bar，确保正确的插入位置和样式
         $("#qr--bar").after(toolbarHtml);
         
-        // 添加类以识别QR Bar存在时的特殊样式
-        $("#input_helper_toolbar").addClass("with-qr-bar");
+        // 为了确保正确的视觉顺序，应用特定的CSS
+        $("#send_form").css("display", "flex");
+        $("#send_form").css("flex-direction", "column");
+        $("#qr--bar").css("order", "1");
+        $("#input_helper_toolbar").css("order", "2");
     } else {
         // 如果不存在QR Bar，则插入到file_form后
         $("#file_form").after(toolbarHtml);
