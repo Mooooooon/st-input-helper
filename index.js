@@ -69,8 +69,6 @@ function insertQuotes() {
         textarea.prop("selectionEnd", startPos + 1);
         textarea.focus();
     }, 0);
-    
-    toastr.info("已插入引号");
 }
 
 // 插入换行功能
@@ -98,8 +96,6 @@ function insertNewLine() {
         textarea.prop("selectionEnd", lineEnd + 1);
         textarea.focus();
     }, 0);
-    
-    toastr.info("已在行末插入换行");
 }
 
 // 插入星号功能
@@ -125,8 +121,56 @@ function insertAsterisk() {
         textarea.prop("selectionEnd", startPos + 1);
         textarea.focus();
     }, 0);
+}
+
+// 插入用户标记功能
+function insertUserTag() {
+    if (!extension_settings[extensionName].enabled) return;
     
-    toastr.info("已插入星号");
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 插入用户标记
+    const newText = beforeText + "{{User}}" + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置在标记之后
+    setTimeout(() => {
+        textarea.prop("selectionStart", startPos + 8); // "{{User}}".length = 8
+        textarea.prop("selectionEnd", startPos + 8);
+        textarea.focus();
+    }, 0);
+}
+
+// 插入角色标记功能
+function insertCharTag() {
+    if (!extension_settings[extensionName].enabled) return;
+    
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 插入角色标记
+    const newText = beforeText + "{{Char}}" + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置在标记之后
+    setTimeout(() => {
+        textarea.prop("selectionStart", startPos + 8); // "{{Char}}".length = 8
+        textarea.prop("selectionEnd", startPos + 8);
+        textarea.focus();
+    }, 0);
 }
 
 // 初始化插件
@@ -163,6 +207,8 @@ jQuery(async () => {
     $("#input_asterisk_btn").on("click", insertAsterisk);
     $("#input_quotes_btn").on("click", insertQuotes);
     $("#input_newline_btn").on("click", insertNewLine);
+    $("#input_user_btn").on("click", insertUserTag);
+    $("#input_char_btn").on("click", insertCharTag);
     
     // 加载设置
     await loadSettings();
