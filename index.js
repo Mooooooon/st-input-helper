@@ -142,6 +142,9 @@ jQuery(async () => {
     if ($("#qr--bar").length) {
         // 如果存在QR Bar，则插入其后
         $("#qr--bar").after(toolbarHtml);
+        
+        // 添加类以识别QR Bar存在时的特殊样式
+        $("#input_helper_toolbar").addClass("with-qr-bar");
     } else {
         // 如果不存在QR Bar，则插入到file_form后
         $("#file_form").after(toolbarHtml);
