@@ -25,8 +25,9 @@
     display: flex;
     align-items: center;
     justify-content: center;  /* 居中显示 */
-    margin: 8px auto;  /* 上下间距，左右自动居中 */
+    margin: 5px auto;  /* 减少上下间距，左右自动居中 */
     width: 100%;
+    padding: 0 10px;  /* 左右添加一些内边距 */
 }
 
 .input-helper-btn {

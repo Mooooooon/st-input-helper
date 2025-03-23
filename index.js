@@ -134,8 +134,8 @@ jQuery(async () => {
     
     // 加载输入工具栏HTML
     const toolbarHtml = await $.get(`${extensionFolderPath}/toolbar.html`);
-    // 将工具栏插入到 #qr--bar 下方
-    $("#qr--bar").after(toolbarHtml);
+    // 将工具栏插入到 #nonQRFormItems 上方
+    $("#nonQRFormItems").before(toolbarHtml);
     
     // 注册事件监听
     $("#insert_quotes_button").on("click", insertQuotes);
