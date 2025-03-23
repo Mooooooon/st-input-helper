@@ -34,10 +34,8 @@ function onEnableInputChange(event) {
     // 根据复选框状态显示或隐藏工具栏
     if (value) {
         $("#input_helper_toolbar").show();
-        toastr.success("输入助手已启用");
     } else {
         $("#input_helper_toolbar").hide();
-        toastr.warning("输入助手已禁用");
     }
 }
 
