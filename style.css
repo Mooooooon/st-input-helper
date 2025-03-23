@@ -97,3 +97,19 @@
 #insert_asterisk_button:hover {
     background-color: rgba(100, 100, 240, 0.2);
 }
+
+/* 添加新的按钮样式 */
+#input_parentheses_btn, 
+#input_book_quotes1_btn, 
+#input_book_quotes2_btn {
+    font-family: var(--mainFontFamily);
+}
+
+/* 设置面板样式 */
+.example-extension_block {
+    margin-bottom: 10px;
+}
+
+.example-extension_block label {
+    margin-left: 5px;
+}
