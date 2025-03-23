@@ -25,9 +25,18 @@
     display: flex;
     align-items: center;
     justify-content: center;  /* 居中显示 */
-    margin: 5px auto;  /* 减少上下间距，左右自动居中 */
+    margin: 3px auto;  /* 减少间距，更紧凑 */
     width: 100%;
     padding: 0 10px;  /* 左右添加一些内边距 */
+    z-index: 10;  /* 确保工具栏在正确的层级上 */
+    background: var(--SmartThemeBlendBgColor, transparent);  /* 半透明背景，更好融入界面 */
+    border-radius: 4px;  /* 圆角边框 */
+}
+
+/* 当QR Bar存在时的特殊调整 */
+#qr--bar + .input-helper-toolbar {
+    margin-top: 1px;  /* QR Bar下方间距更小 */
+    margin-bottom: 3px;
 }
 
 .input-helper-btn {
