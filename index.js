@@ -22,7 +22,31 @@ const defaultSettings = {
         newline: true,
         user: true,
         char: true
+    },
+    shortcuts: {
+        asterisk: "",
+        quotes: "",
+        parentheses: "",
+        bookQuotes1: "",
+        bookQuotes2: "",
+        bookQuotes3: "",
+        newline: "",
+        user: "",
+        char: ""
     }
+};
+
+// 快捷键映射表
+const shortcutFunctionMap = {
+    'asterisk': insertAsterisk,
+    'quotes': insertQuotes,
+    'parentheses': insertParentheses,
+    'bookQuotes1': insertBookQuotes1,
+    'bookQuotes2': insertBookQuotes2,
+    'bookQuotes3': insertBookQuotes3,
+    'newline': insertNewLine,
+    'user': insertUserTag,
+    'char': insertCharTag
 };
 
 // 加载插件设置
@@ -35,6 +59,11 @@ async function loadSettings() {
     // 兼容旧版本设置
     if (!extension_settings[extensionName].buttons) {
         extension_settings[extensionName].buttons = defaultSettings.buttons;
+    }
+
+    // 兼容旧版本设置 - 快捷键
+    if (!extension_settings[extensionName].shortcuts) {
+        extension_settings[extensionName].shortcuts = defaultSettings.shortcuts;
     }
 
     // 更新UI中的设置
@@ -51,6 +80,12 @@ async function loadSettings() {
     $("#enable_newline_btn").prop("checked", buttons.newline !== false);
     $("#enable_user_btn").prop("checked", buttons.user !== false);
     $("#enable_char_btn").prop("checked", buttons.char !== false);
+    
+    // 更新快捷键设置
+    const shortcuts = extension_settings[extensionName].shortcuts;
+    for (const key in shortcuts) {
+        $(`#shortcut_${key}`).val(shortcuts[key] || "");
+    }
     
     updateButtonVisibility();
 }
@@ -335,6 +370,119 @@ function insertBookQuotes3() {
     }, 0);
 }
 
+// 处理快捷键设置
+function setupShortcutInputs() {
+    // 处理快捷键输入
+    $(".shortcut-input").on("keydown", function(e) {
+        e.preventDefault();
+        
+        // 获取按键组合
+        let keys = [];
+        if (e.ctrlKey) keys.push("Ctrl");
+        if (e.altKey) keys.push("Alt");
+        if (e.shiftKey) keys.push("Shift");
+        
+        // 添加主键（如果不是修饰键）
+        if (
+            e.key !== "Control" && 
+            e.key !== "Alt" && 
+            e.key !== "Shift" && 
+            e.key !== "Meta" &&
+            e.key !== "Escape"
+        ) {
+            // 将键名首字母大写
+            const keyName = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+            keys.push(keyName);
+        }
+        
+        // 如果只按了Escape键，清除快捷键
+        if (e.key === "Escape") {
+            $(this).val("");
+            const shortcutKey = $(this).attr("id").replace("shortcut_", "");
+            extension_settings[extensionName].shortcuts[shortcutKey] = "";
+            saveSettingsDebounced();
+            return;
+        }
+        
+        // 如果没有按键组合或只有修饰键，不设置
+        if (keys.length === 0 || (keys.length === 1 && ["Ctrl", "Alt", "Shift"].includes(keys[0]))) {
+            return;
+        }
+        
+        // 设置快捷键
+        const shortcutString = keys.join("+");
+        $(this).val(shortcutString);
+        
+        // 保存到设置
+        const shortcutKey = $(this).attr("id").replace("shortcut_", "");
+        extension_settings[extensionName].shortcuts[shortcutKey] = shortcutString;
+        saveSettingsDebounced();
+    });
+    
+    // 处理清除按钮
+    $(".shortcut-clear-btn").on("click", function() {
+        const targetId = $(this).data("target");
+        $(`#${targetId}`).val("");
+        
+        // 保存到设置
+        const shortcutKey = targetId.replace("shortcut_", "");
+        extension_settings[extensionName].shortcuts[shortcutKey] = "";
+        saveSettingsDebounced();
+    });
+}
+
+// 全局快捷键处理函数
+function handleGlobalShortcuts(e) {
+    // 如果插件未启用或正在编辑快捷键，不处理
+    if (!extension_settings[extensionName].enabled || $(document.activeElement).hasClass("shortcut-input")) {
+        return;
+    }
+    
+    // 如果当前焦点不在文本区域，不处理
+    const messageInput = getMessageInput()[0];
+    if (document.activeElement !== messageInput) {
+        return;
+    }
+    
+    // 获取当前按键组合
+    let keys = [];
+    if (e.ctrlKey) keys.push("Ctrl");
+    if (e.altKey) keys.push("Alt");
+    if (e.shiftKey) keys.push("Shift");
+    
+    // 添加主键（如果不是修饰键）
+    if (
+        e.key !== "Control" && 
+        e.key !== "Alt" && 
+        e.key !== "Shift" && 
+        e.key !== "Meta"
+    ) {
+        // 将键名首字母大写
+        const keyName = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+        keys.push(keyName);
+    }
+    
+    // 如果没有有效的按键组合，不处理
+    if (keys.length <= 1) {
+        return;
+    }
+    
+    const shortcutString = keys.join("+");
+    const shortcuts = extension_settings[extensionName].shortcuts;
+    
+    // 查找匹配的快捷键
+    for (const key in shortcuts) {
+        if (shortcuts[key] === shortcutString) {
+            e.preventDefault();
+            // 执行对应的功能
+            if (shortcutFunctionMap[key]) {
+                shortcutFunctionMap[key]();
+                return;
+            }
+        }
+    }
+}
+
 // 初始化插件
 jQuery(async () => {
     // 加载HTML - 修改文件名从example.html到settings.html
@@ -390,6 +538,12 @@ jQuery(async () => {
     
     // 加载设置
     await loadSettings();
+    
+    // 设置快捷键输入框
+    setupShortcutInputs();
+    
+    // 注册全局快捷键事件
+    $(document).on("keydown", handleGlobalShortcuts);
     
     // 根据初始化设置显示或隐藏工具栏
     if (!extension_settings[extensionName].enabled) {

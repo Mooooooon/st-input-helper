@@ -113,3 +113,42 @@
 .example-extension_block label {
     margin-left: 5px;
 }
+
+/* 快捷键设置样式 */
+.shortcut-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.shortcut-input {
+    margin: 0 8px;
+    width: 120px;
+    background-color: var(--SmartThemeBlurTintColor);
+    color: var(--SmartThemeBodyColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.shortcut-clear-btn {
+    border: 1px solid var(--SmartThemeBorderColor);
+    background-color: rgba(180, 0, 0, 0.2);
+    color: var(--SmartThemeBodyColor);
+    border-radius: 4px;
+    padding: 2px 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.shortcut-clear-btn:hover {
+    background-color: rgba(220, 0, 0, 0.3);
+}
+
+.shortcut-note {
+    font-size: 12px;
+    color: var(--SmartThemeEmColor);
+    margin-bottom: 8px;
+    font-style: italic;
+}
