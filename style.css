@@ -30,9 +30,15 @@
     padding: 2px 10px;  /* 左右添加一些内边距 */
     position: relative;  /* 设置定位 */
     z-index: 9;  /* 确保工具栏在QR Bar下方 */
-    background: var(--SmartThemeBlurTintColor);  /* 半透明背景，更好融入界面 */
+    background: transparent; /* 透明背景 */
     border-radius: 4px;  /* 圆角边框 */
     order: 2; /* 确保顺序在 QR Bar 之后 */
+    opacity: 0.7; /* 匹配QR Bar的透明度 */
+    transition: 0.3s; /* 添加过渡效果 */
+}
+
+.input-helper-toolbar:hover {
+    opacity: 1; /* 悬停时提高透明度 */
 }
 
 /* 当QR Bar存在时的特殊调整 */
@@ -55,24 +61,28 @@
     flex-direction: column;
 }
 
+/* 按钮样式匹配menu_button和QR按钮 */
 .input-helper-btn {
-    background-color: var(--SmartThemeBlendColor5, var(--grey30));
-    border: 1px solid var(--SmartThemeBorderColor);
     color: var(--SmartThemeBodyColor);
-    border-radius: 4px;
+    filter: grayscale(0.5);
+    background-color: var(--SmartThemeBlurTintColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 5px;
     width: 30px;
     height: 30px;
-    margin: 0 2px;
+    margin: 0 3px;
     font-size: 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: 0.3s;
+    text-align: center;
 }
 
 .input-helper-btn:hover {
-    background-color: var(--grey50);
+    filter: grayscale(0);
+    background-color: var(--SmartThemeChatTintColor, var(--grey50));
 }
 
 /* 添加星号按钮样式 */
