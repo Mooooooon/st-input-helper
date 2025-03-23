@@ -31,9 +31,12 @@ function onEnableInputChange(event) {
     extension_settings[extensionName].enabled = value;
     saveSettingsDebounced();
     
+    // 根据复选框状态显示或隐藏工具栏
     if (value) {
+        $("#input_helper_toolbar").show();
         toastr.success("输入助手已启用");
     } else {
+        $("#input_helper_toolbar").hide();
         toastr.warning("输入助手已禁用");
     }
 }
@@ -150,6 +153,11 @@ jQuery(async () => {
     
     // 加载设置
     await loadSettings();
+    
+    // 根据初始化设置显示或隐藏工具栏
+    if (!extension_settings[extensionName].enabled) {
+        $("#input_helper_toolbar").hide();
+    }
     
     console.log("输入助手插件已加载");
 });
