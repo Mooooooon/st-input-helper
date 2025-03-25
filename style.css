@@ -266,11 +266,6 @@
     height: 38px;
 }
 
-/* 避免快捷键输入框和编辑/删除按钮过度接近 */
-.integrated-button-row[data-custom="true"] .shortcut-clear-btn {
-    margin-right: 5px;
-}
-
 /* 移动设备优化 */
 @media (max-width: 768px) {
     .input-helper-toolbar {
@@ -328,13 +323,14 @@
 }
 
 .custom-symbol-dialog-content {
-    background-color: var(--SmartThemeBodyColor, #282b30);
-    color: var(--SmartThemeTextColor, white);
-    border: 1px solid var(--SmartThemeBorderColor, #444);
+    background-color: var(--SmartThemeBlurTintColor, rgba(50, 55, 65, 0.9));
+    color: var(--SmartThemeBodyColor, rgba(220, 220, 220, 1));
+    border: 1px solid var(--SmartThemeBorderColor, rgba(90, 90, 110, 0.7));
     border-radius: 8px;
     padding: 20px;
     width: 350px;
     max-width: 90%;
+    box-shadow: 0 4px 12px var(--SmartThemeShadowColor, rgba(20, 20, 20, 0.5));
 }
 
 .custom-symbol-form {
@@ -350,15 +346,15 @@
 .form-group label {
     width: 100px;
     display: inline-block;
-    color: var(--SmartThemeTextColor, white);
+    color: var(--SmartThemeBodyColor, rgba(220, 220, 220, 1));
 }
 
 .form-group input, .form-group select {
     flex: 1;
     padding: 5px;
-    border: 1px solid var(--SmartThemeBorderColor, #444);
-    background-color: var(--SmartThemeInputColor, #383838);
-    color: var(--SmartThemeInputTextColor, white);
+    border: 1px solid var(--SmartThemeBorderColor, rgba(90, 90, 110, 0.7));
+    background-color: var(--SmartThemeBlurTintColor, rgba(50, 55, 65, 0.9));
+    color: var(--SmartThemeBodyColor, rgba(220, 220, 220, 1));
     border-radius: 4px;
 }
 
@@ -371,15 +367,15 @@
 
 .custom-symbol-buttons button {
     padding: 5px 15px;
-    border: 1px solid var(--SmartThemeBorderColor, #444);
-    background-color: var(--SmartThemeBlurTintColor, #2d3033);
-    color: var(--SmartThemeTextColor, white);
+    border: 1px solid var(--SmartThemeBorderColor, rgba(90, 90, 110, 0.7));
+    background-color: var(--SmartThemeBlurTintColor, rgba(50, 55, 65, 0.9));
+    color: var(--SmartThemeBodyColor, rgba(220, 220, 220, 1));
     border-radius: 4px;
     cursor: pointer;
 }
 
 .custom-symbol-buttons button:hover {
-    background-color: var(--SmartThemeChatTintColor, #36393f);
+    background-color: var(--SmartThemeChatTintColor, rgba(50, 55, 65, 0.9));
 }
 
 /* 自定义符号设置行样式 */

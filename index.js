@@ -229,6 +229,13 @@ function updateButtonVisibility() {
     $("#input_user_btn").toggle(buttons.user !== false);
     $("#input_char_btn").toggle(buttons.char !== false);
     
+    // 更新自定义按钮的显示/隐藏
+    const customSymbols = extension_settings[extensionName].customSymbols || [];
+    customSymbols.forEach((symbol, index) => {
+        const buttonKey = `custom_${index}`;
+        $(`#input_custom_${index}_btn`).toggle(buttons[buttonKey] !== false);
+    });
+    
     // 检查所有按钮是否都被隐藏，如果是则隐藏整个工具栏
     const allHidden = Object.values(buttons).every(v => v === false);
     if (allHidden) {
@@ -634,6 +641,8 @@ function loadCustomSymbolButtons() {
     
     // 为每个自定义符号创建按钮和设置项
     customSymbols.forEach((symbol, index) => {
+        const buttonKey = `custom_${index}`;
+        
         // 为工具栏创建按钮
         createCustomSymbolButton(symbol, index);
         
@@ -641,30 +650,32 @@ function loadCustomSymbolButtons() {
         createCustomSymbolSetting(symbol, index);
         
         // 更新按钮顺序
-        const key = `custom_${index}`;
-        if (!extension_settings[extensionName].buttonOrder.includes(key)) {
-            extension_settings[extensionName].buttonOrder.push(key);
+        if (!extension_settings[extensionName].buttonOrder.includes(buttonKey)) {
+            extension_settings[extensionName].buttonOrder.push(buttonKey);
         }
         
         // 确保该按钮有显示设置
-        if (extension_settings[extensionName].buttons[key] === undefined) {
-            extension_settings[extensionName].buttons[key] = true;
+        if (extension_settings[extensionName].buttons[buttonKey] === undefined) {
+            extension_settings[extensionName].buttons[buttonKey] = true;
         }
         
         // 确保该按钮有快捷键设置
-        if (extension_settings[extensionName].shortcuts[key] === undefined) {
-            extension_settings[extensionName].shortcuts[key] = "";
+        if (extension_settings[extensionName].shortcuts[buttonKey] === undefined) {
+            extension_settings[extensionName].shortcuts[buttonKey] = "";
         }
         
         // 更新快捷键映射
-        shortcutFunctionMap[key] = function() {
-            insertCustomSymbol(symbol);
+        shortcutFunctionMap[buttonKey] = function() {
+            insertCustomSymbol(customSymbols[index]);
         };
     });
     
     // 更新按钮顺序
     updateButtonsOrder();
     updateToolbarButtonOrder();
+    
+    // 重新绑定快捷键输入框事件
+    setupShortcutInputs();
 }
 
 // 创建自定义符号按钮
@@ -821,12 +832,57 @@ function deleteCustomSymbol(index) {
         // 保存设置
         saveSettingsDebounced();
         
-        // 重新加载自定义按钮
+        // 移动设备监听器需要重新绑定
+        rebindMobileEventListeners();
+        
+        // 重新加载自定义按钮 - 这会导致索引重排
         loadCustomSymbolButtons();
         
         // 更新工具栏
         updateButtonVisibility();
     }
+}
+
+// 重新绑定移动设备事件监听器
+function rebindMobileEventListeners() {
+    if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return; // 非移动设备不需要重新绑定
+    }
+    
+    // 移除之前的监听器
+    $("#input_helper_toolbar button").off("touchstart");
+    
+    // 重新绑定监听器
+    $("#input_helper_toolbar button").on("touchstart", function(e) {
+        e.preventDefault();
+        const btnId = $(this).attr("id");
+        
+        // 基于按钮ID调用相应的函数
+        if (btnId === "input_asterisk_btn") insertAsterisk();
+        else if (btnId === "input_quotes_btn") insertQuotes();
+        else if (btnId === "input_parentheses_btn") insertParentheses();
+        else if (btnId === "input_book_quotes1_btn") insertBookQuotes1();
+        else if (btnId === "input_book_quotes2_btn") insertBookQuotes2();
+        else if (btnId === "input_book_quotes3_btn") insertBookQuotes3();
+        else if (btnId === "input_newline_btn") insertNewLine();
+        else if (btnId === "input_user_btn") insertUserTag();
+        else if (btnId === "input_char_btn") insertCharTag();
+        else if (btnId.startsWith("input_custom_")) {
+            // 处理自定义按钮
+            const index = parseInt(btnId.replace("input_custom_", "").replace("_btn", ""));
+            const customSymbols = extension_settings[extensionName].customSymbols || [];
+            if (index >= 0 && index < customSymbols.length) {
+                insertCustomSymbol(customSymbols[index]);
+            }
+        }
+        
+        // 确保输入框保持焦点状态
+        setTimeout(() => {
+            getMessageInput().focus();
+        }, 10);
+        
+        return false;
+    });
 }
 
 // 显示自定义符号对话框
@@ -966,29 +1022,8 @@ jQuery(async () => {
             // 不阻止冒泡，以便点击事件仍然被处理
         });
         
-        // 为所有按钮添加触摸开始事件处理，防止键盘隐藏
-        $("#input_helper_toolbar button").on("touchstart", function(e) {
-            e.preventDefault(); // 阻止默认触摸行为
-            const btnId = $(this).attr("id");
-            
-            // 基于按钮ID调用相应的函数，保持原有功能不变
-            if (btnId === "input_asterisk_btn") insertAsterisk();
-            else if (btnId === "input_quotes_btn") insertQuotes();
-            else if (btnId === "input_parentheses_btn") insertParentheses();
-            else if (btnId === "input_book_quotes1_btn") insertBookQuotes1();
-            else if (btnId === "input_book_quotes2_btn") insertBookQuotes2();
-            else if (btnId === "input_book_quotes3_btn") insertBookQuotes3();
-            else if (btnId === "input_newline_btn") insertNewLine();
-            else if (btnId === "input_user_btn") insertUserTag();
-            else if (btnId === "input_char_btn") insertCharTag();
-            
-            // 确保输入框保持焦点状态
-            setTimeout(() => {
-                getMessageInput().focus();
-            }, 10);
-            
-            return false; // 防止事件进一步传播
-        });
+        // 初始绑定移动设备触摸事件 - 使用统一的函数便于重新绑定
+        rebindMobileEventListeners();
     } else {
         // 桌面端使用原有的点击事件
         $("#input_asterisk_btn").on("click", insertAsterisk);
@@ -1000,6 +1035,7 @@ jQuery(async () => {
         $("#input_book_quotes1_btn").on("click", insertBookQuotes1);
         $("#input_book_quotes2_btn").on("click", insertBookQuotes2);
         $("#input_book_quotes3_btn").on("click", insertBookQuotes3);
+        // 动态添加的自定义按钮会在创建时绑定事件
     }
     
     // 注册事件监听
