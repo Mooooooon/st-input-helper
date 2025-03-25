@@ -601,8 +601,18 @@ function handleGlobalShortcuts(e) {
     for (const key in shortcuts) {
         if (shortcuts[key] === shortcutString) {
             e.preventDefault();
+            
+            // 检查是否是自定义按钮的快捷键
+            if (key.startsWith('custom_')) {
+                const index = parseInt(key.replace('custom_', ''));
+                const customSymbols = extension_settings[extensionName].customSymbols || [];
+                if (index >= 0 && index < customSymbols.length) {
+                    insertCustomSymbol(customSymbols[index]);
+                    return;
+                }
+            }
             // 执行对应的功能
-            if (shortcutFunctionMap[key]) {
+            else if (shortcutFunctionMap[key]) {
                 shortcutFunctionMap[key]();
                 return;
             }
@@ -636,6 +646,16 @@ function loadCustomSymbolButtons() {
         if (extension_settings[extensionName].buttons[key] === undefined) {
             extension_settings[extensionName].buttons[key] = true;
         }
+        
+        // 确保该按钮有快捷键设置
+        if (extension_settings[extensionName].shortcuts[key] === undefined) {
+            extension_settings[extensionName].shortcuts[key] = "";
+        }
+        
+        // 更新快捷键映射
+        shortcutFunctionMap[key] = function() {
+            insertCustomSymbol(symbol);
+        };
     });
     
     // 更新按钮顺序
@@ -697,6 +717,8 @@ function createCustomSymbolSetting(symbol, index) {
             <input id="enable_${buttonKey}_btn" type="checkbox" ${extension_settings[extensionName].buttons[buttonKey] !== false ? 'checked' : ''} />
             <div class="button-preview">${symbol.display}</div>
             <label for="enable_${buttonKey}_btn">${symbol.name}</label>
+            <input id="shortcut_${buttonKey}" class="shortcut-input" type="text" value="${extension_settings[extensionName].shortcuts[buttonKey] || ''}" placeholder="无快捷键" readonly />
+            <button class="shortcut-clear-btn" data-target="shortcut_${buttonKey}">×</button>
             <button class="custom-edit-btn" title="编辑" data-index="${index}">✏️</button>
             <button class="custom-delete-btn" title="删除" data-index="${index}">🗑️</button>
         </div>
@@ -783,8 +805,14 @@ function deleteCustomSymbol(index) {
         // 从按钮显示设置中删除
         delete extension_settings[extensionName].buttons[buttonKey];
         
+        // 从按钮快捷键设置中删除
+        delete extension_settings[extensionName].shortcuts[buttonKey];
+        
         // 从工具栏中删除
         $(`#input_custom_${index}_btn`).remove();
+        
+        // 从快捷键映射中删除
+        delete shortcutFunctionMap[buttonKey];
         
         // 保存设置
         saveSettingsDebounced();
@@ -1015,6 +1043,21 @@ jQuery(async () => {
     // 添加自定义符号按钮事件
     $("#add_custom_symbol_btn").on("click", function() {
         showCustomSymbolDialog();
+    });
+    
+    // 注册自定义符号对话框键盘事件处理
+    $(document).on("keydown", function(e) {
+        // 如果对话框正在显示且按下了Escape，关闭对话框
+        if ($("#custom_symbol_dialog").length && e.key === "Escape") {
+            $("#custom_symbol_dialog").remove();
+        }
+        
+        // 如果对话框正在显示且按下了Enter，模拟点击保存按钮
+        if ($("#custom_symbol_dialog").length && e.key === "Enter" && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+            if ($(document.activeElement).is("input") && !$(document.activeElement).is("textarea")) {
+                $("#custom_symbol_save").click();
+            }
+        }
     });
     
     console.log("输入助手插件已加载");

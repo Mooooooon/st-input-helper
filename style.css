@@ -266,6 +266,11 @@
     height: 38px;
 }
 
+/* 避免快捷键输入框和编辑/删除按钮过度接近 */
+.integrated-button-row[data-custom="true"] .shortcut-clear-btn {
+    margin-right: 5px;
+}
+
 /* 移动设备优化 */
 @media (max-width: 768px) {
     .input-helper-toolbar {
