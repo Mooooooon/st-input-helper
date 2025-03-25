@@ -392,8 +392,10 @@
         max-width: 90%;
         margin: 0 auto;
         max-height: 80vh;
-        position: relative;
-        top: -30px; /* 向上移动一点 */
+        position: fixed; /* 改为fixed定位 */
+        top: 50%; /* 垂直居中 */
+        left: 50%; /* 水平居中 */
+        transform: translate(-50%, -50%); /* 居中偏移 */
     }
     
     .form-group {
