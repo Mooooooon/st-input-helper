@@ -328,9 +328,9 @@
 }
 
 .custom-symbol-dialog-content {
-    background-color: var(--SmartThemeBodyColor);
-    color: var(--SmartThemeTextColor);
-    border: 1px solid var(--SmartThemeBorderColor);
+    background-color: var(--SmartThemeBodyColor, #282b30);
+    color: var(--SmartThemeTextColor, white);
+    border: 1px solid var(--SmartThemeBorderColor, #444);
     border-radius: 8px;
     padding: 20px;
     width: 350px;
@@ -350,14 +350,15 @@
 .form-group label {
     width: 100px;
     display: inline-block;
+    color: var(--SmartThemeTextColor, white);
 }
 
 .form-group input, .form-group select {
     flex: 1;
     padding: 5px;
-    border: 1px solid var(--SmartThemeBorderColor);
-    background-color: var(--SmartThemeInputColor);
-    color: var(--SmartThemeInputTextColor);
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    background-color: var(--SmartThemeInputColor, #383838);
+    color: var(--SmartThemeInputTextColor, white);
     border-radius: 4px;
 }
 
@@ -370,15 +371,15 @@
 
 .custom-symbol-buttons button {
     padding: 5px 15px;
-    border: 1px solid var(--SmartThemeBorderColor);
-    background-color: var(--SmartThemeBlurTintColor);
-    color: var(--SmartThemeBodyColor);
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    background-color: var(--SmartThemeBlurTintColor, #2d3033);
+    color: var(--SmartThemeTextColor, white);
     border-radius: 4px;
     cursor: pointer;
 }
 
 .custom-symbol-buttons button:hover {
-    background-color: var(--SmartThemeChatTintColor);
+    background-color: var(--SmartThemeChatTintColor, #36393f);
 }
 
 /* 自定义符号设置行样式 */
@@ -393,7 +394,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 5px;
+    margin-right: 5px;  /* 修改为右边距，因为位置调整了 */
     opacity: 0.7;
     transition: opacity 0.2s;
 }
@@ -404,6 +405,16 @@
 
 .custom-delete-btn {
     color: rgba(255, 80, 80, 0.9);
+}
+
+/* 调整自定义按钮行的布局 */
+.integrated-button-row[data-custom="true"] label {
+    flex-grow: 1;
+    margin-right: 0;  /* 减少右边距，为编辑/删除按钮腾出空间 */
+}
+
+.integrated-button-row[data-custom="true"] .shortcut-input {
+    margin-left: auto;  /* 将快捷键输入框推到右侧 */
 }
 
 /* 添加自定义符号按钮 */

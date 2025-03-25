@@ -517,8 +517,10 @@ function setupShortcutInputs() {
             e.key !== "Meta" &&
             e.key !== "Escape"
         ) {
-            // 将键名首字母大写
-            const keyName = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+            // 修复: 确保e.key存在并且有length属性
+            const keyName = e.key && typeof e.key === 'string' && e.key.length === 1 
+                ? e.key.toUpperCase() 
+                : (e.key || "Unknown");
             keys.push(keyName);
         }
         
@@ -584,8 +586,10 @@ function handleGlobalShortcuts(e) {
         e.key !== "Shift" && 
         e.key !== "Meta"
     ) {
-        // 将键名首字母大写
-        const keyName = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+        // 修复: 确保e.key存在并且有length属性
+        const keyName = e.key && typeof e.key === 'string' && e.key.length === 1 
+            ? e.key.toUpperCase() 
+            : (e.key || "Unknown");
         keys.push(keyName);
     }
     
@@ -710,17 +714,17 @@ function createCustomSymbolSetting(symbol, index) {
     // 先检查是否已存在，如果存在则移除
     $(`.integrated-button-row[data-button-key="${buttonKey}"]`).remove();
     
-    // 创建设置行
+    // 创建设置行 - 修改编辑和删除按钮位置
     const row = $(`
         <div class="integrated-button-row" data-button-key="${buttonKey}" data-custom="true" data-index="${index}">
             <span class="drag-handle menu-handle">&#9776;</span>
             <input id="enable_${buttonKey}_btn" type="checkbox" ${extension_settings[extensionName].buttons[buttonKey] !== false ? 'checked' : ''} />
             <div class="button-preview">${symbol.display}</div>
             <label for="enable_${buttonKey}_btn">${symbol.name}</label>
-            <input id="shortcut_${buttonKey}" class="shortcut-input" type="text" value="${extension_settings[extensionName].shortcuts[buttonKey] || ''}" placeholder="无快捷键" readonly />
-            <button class="shortcut-clear-btn" data-target="shortcut_${buttonKey}">×</button>
             <button class="custom-edit-btn" title="编辑" data-index="${index}">✏️</button>
             <button class="custom-delete-btn" title="删除" data-index="${index}">🗑️</button>
+            <input id="shortcut_${buttonKey}" class="shortcut-input" type="text" value="${extension_settings[extensionName].shortcuts[buttonKey] || ''}" placeholder="无快捷键" readonly />
+            <button class="shortcut-clear-btn" data-target="shortcut_${buttonKey}">×</button>
         </div>
     `);
     
@@ -827,7 +831,7 @@ function deleteCustomSymbol(index) {
 
 // 显示自定义符号对话框
 function showCustomSymbolDialog(existingSymbol = null, editIndex = -1) {
-    // 创建对话框
+    // 创建对话框 - 修改样式以正确应用主题颜色
     const dialog = $(`
         <div id="custom_symbol_dialog" class="custom-symbol-dialog">
             <div class="custom-symbol-dialog-content">
