@@ -329,6 +329,72 @@
     border-radius: 8px;
     padding: 20px;
     width: 350px;
+    max-width: 85%;
+    max-height: 90vh; /* 限制最大高度 */
+    box-shadow: 0 4px 12px var(--SmartThemeShadowColor, rgba(20, 20, 20, 0.5));
+    overflow-y: auto; /* 添加垂直滚动条 */
+}
+
+/* 移动设备上的对话框样式优化 */
+@media (max-width: 768px) {
+    .custom-symbol-dialog-content {
+        padding: 15px;
+        width: 300px;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .form-group label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .form-group input, .form-group select {
+        width: 100%;
+    }
+    
+    /* 光标位置选择的布局修改 */
+    .form-group:last-of-type {
+        flex-direction: column;
+    }
+    
+    #custom_symbol_cursor {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    #custom_symbol_cursor_pos {
+        width: 100% !important;
+        margin-top: 5px;
+    }
+}
+
+/* 自定义符号对话框样式 */
+.custom-symbol-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.custom-symbol-dialog-content {
+    background-color: var(--SmartThemeBlurTintColor, rgba(50, 55, 65, 0.9));
+    color: var(--SmartThemeBodyColor, rgba(220, 220, 220, 1));
+    border: 1px solid var(--SmartThemeBorderColor, rgba(90, 90, 110, 0.7));
+    border-radius: 8px;
+    padding: 20px;
+    width: 350px;
     max-width: 90%;
     box-shadow: 0 4px 12px var(--SmartThemeShadowColor, rgba(20, 20, 20, 0.5));
 }
