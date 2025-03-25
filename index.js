@@ -45,7 +45,9 @@ const defaultSettings = {
         'newline',
         'user',
         'char'
-    ]
+    ],
+    // 添加自定义符号设置
+    customSymbols: []
 };
 
 // 快捷键映射表
@@ -83,6 +85,11 @@ async function loadSettings() {
         extension_settings[extensionName].buttonOrder = defaultSettings.buttonOrder;
     }
 
+    // 兼容旧版本设置 - 自定义符号
+    if (!extension_settings[extensionName].customSymbols) {
+        extension_settings[extensionName].customSymbols = [];
+    }
+
     // 更新UI中的设置
     $("#enable_input_helper").prop("checked", extension_settings[extensionName].enabled);
     
@@ -108,6 +115,9 @@ async function loadSettings() {
     updateButtonsOrder();
     
     updateButtonVisibility();
+
+    // 加载自定义符号按钮
+    loadCustomSymbolButtons();
 }
 
 // 更新设置面板中的按钮顺序
@@ -589,6 +599,288 @@ function handleGlobalShortcuts(e) {
     }
 }
 
+// 加载自定义符号按钮
+function loadCustomSymbolButtons() {
+    const customSymbols = extension_settings[extensionName].customSymbols || [];
+    
+    // 清除现有的自定义按钮
+    $(".custom-symbol-button").remove();
+    $(".integrated-button-row[data-custom='true']").remove();
+    
+    // 为每个自定义符号创建按钮和设置项
+    customSymbols.forEach((symbol, index) => {
+        // 为工具栏创建按钮
+        createCustomSymbolButton(symbol, index);
+        
+        // 为设置面板创建行
+        createCustomSymbolSetting(symbol, index);
+        
+        // 更新按钮顺序
+        const key = `custom_${index}`;
+        if (!extension_settings[extensionName].buttonOrder.includes(key)) {
+            extension_settings[extensionName].buttonOrder.push(key);
+        }
+        
+        // 确保该按钮有显示设置
+        if (extension_settings[extensionName].buttons[key] === undefined) {
+            extension_settings[extensionName].buttons[key] = true;
+        }
+    });
+    
+    // 更新按钮顺序
+    updateButtonsOrder();
+    updateToolbarButtonOrder();
+}
+
+// 创建自定义符号按钮
+function createCustomSymbolButton(symbol, index) {
+    const buttonId = `input_custom_${index}_btn`;
+    const buttonKey = `custom_${index}`;
+    
+    // 创建按钮并添加到工具栏
+    const button = $(`<button id="${buttonId}" class="input-helper-btn custom-symbol-button" title="${symbol.name}" data-norefocus="true" data-index="${index}">${symbol.display}</button>`);
+    $("#input_helper_toolbar").append(button);
+    
+    // 添加点击事件
+    bindCustomSymbolEvent(button, symbol);
+}
+
+// 为自定义符号按钮绑定事件
+function bindCustomSymbolEvent(button, symbol) {
+    // 检查是否是移动设备
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+        button.on("touchstart", function(e) {
+            e.preventDefault();
+            insertCustomSymbol(symbol);
+            
+            // 确保输入框保持焦点状态
+            setTimeout(() => {
+                getMessageInput().focus();
+            }, 10);
+            
+            return false;
+        });
+    } else {
+        button.on("click", function() {
+            insertCustomSymbol(symbol);
+        });
+    }
+}
+
+// 创建自定义符号设置项
+function createCustomSymbolSetting(symbol, index) {
+    const buttonKey = `custom_${index}`;
+    
+    // 创建设置行
+    const row = $(`
+        <div class="integrated-button-row" data-button-key="${buttonKey}" data-custom="true" data-index="${index}">
+            <span class="drag-handle menu-handle">&#9776;</span>
+            <input id="enable_${buttonKey}_btn" type="checkbox" ${extension_settings[extensionName].buttons[buttonKey] !== false ? 'checked' : ''} />
+            <div class="button-preview">${symbol.display}</div>
+            <label for="enable_${buttonKey}_btn">${symbol.name}</label>
+            <button class="custom-edit-btn" title="编辑" data-index="${index}">✏️</button>
+            <button class="custom-delete-btn" title="删除" data-index="${index}">🗑️</button>
+        </div>
+    `);
+    
+    // 添加到设置面板
+    $("#integrated_button_settings").append(row);
+    
+    // 添加事件监听
+    row.find(`#enable_${buttonKey}_btn`).on("input", onButtonVisibilityChange(buttonKey));
+    row.find(".custom-edit-btn").on("click", function() {
+        const index = $(this).data("index");
+        editCustomSymbol(index);
+    });
+    row.find(".custom-delete-btn").on("click", function() {
+        const index = $(this).data("index");
+        deleteCustomSymbol(index);
+    });
+}
+
+// 插入自定义符号
+function insertCustomSymbol(symbol) {
+    if (!extension_settings[extensionName].enabled) return;
+    
+    const textarea = getMessageInput();
+    const startPos = textarea.prop("selectionStart");
+    const endPos = textarea.prop("selectionEnd");
+    const text = textarea.val();
+    
+    const beforeText = text.substring(0, startPos);
+    const selectedText = text.substring(startPos, endPos);
+    const afterText = text.substring(endPos);
+    
+    // 插入符号
+    const newText = beforeText + symbol.symbol + afterText;
+    textarea.val(newText);
+    
+    // 设置光标位置
+    setTimeout(() => {
+        // 计算光标位置
+        let cursorPos = startPos;
+        
+        if (symbol.cursorPos === "start") {
+            cursorPos = startPos;
+        } else if (symbol.cursorPos === "end") {
+            cursorPos = startPos + symbol.symbol.length;
+        } else if (symbol.cursorPos === "middle") {
+            cursorPos = startPos + Math.floor(symbol.symbol.length / 2);
+        } else {
+            // 具体位置
+            cursorPos = startPos + parseInt(symbol.cursorPos) || startPos;
+        }
+        
+        textarea.prop("selectionStart", cursorPos);
+        textarea.prop("selectionEnd", cursorPos);
+        textarea.focus();
+    }, 0);
+}
+
+// 编辑自定义符号
+function editCustomSymbol(index) {
+    const symbols = extension_settings[extensionName].customSymbols;
+    const symbol = symbols[index];
+    
+    // 显示编辑对话框
+    showCustomSymbolDialog(symbol, index);
+}
+
+// 删除自定义符号
+function deleteCustomSymbol(index) {
+    if (confirm("确定要删除这个自定义符号吗？")) {
+        const symbols = extension_settings[extensionName].customSymbols;
+        const buttonKey = `custom_${index}`;
+        
+        // 从设置中删除
+        symbols.splice(index, 1);
+        
+        // 从按钮顺序中删除
+        const orderIndex = extension_settings[extensionName].buttonOrder.indexOf(buttonKey);
+        if (orderIndex > -1) {
+            extension_settings[extensionName].buttonOrder.splice(orderIndex, 1);
+        }
+        
+        // 从按钮显示设置中删除
+        delete extension_settings[extensionName].buttons[buttonKey];
+        
+        // 保存设置
+        saveSettingsDebounced();
+        
+        // 重新加载自定义按钮
+        loadCustomSymbolButtons();
+        
+        // 更新工具栏
+        updateButtonVisibility();
+    }
+}
+
+// 显示自定义符号对话框
+function showCustomSymbolDialog(existingSymbol = null, editIndex = -1) {
+    // 创建对话框
+    const dialog = $(`
+        <div id="custom_symbol_dialog" class="custom-symbol-dialog">
+            <div class="custom-symbol-dialog-content">
+                <h3>${existingSymbol ? '编辑符号' : '添加自定义符号'}</h3>
+                <div class="custom-symbol-form">
+                    <div class="form-group">
+                        <label for="custom_symbol_name">名称：</label>
+                        <input type="text" id="custom_symbol_name" value="${existingSymbol ? existingSymbol.name : ''}" placeholder="如：方括号">
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_symbol_symbol">符号：</label>
+                        <input type="text" id="custom_symbol_symbol" value="${existingSymbol ? existingSymbol.symbol : ''}" placeholder="如：[]">
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_symbol_display">显示文本：</label>
+                        <input type="text" id="custom_symbol_display" value="${existingSymbol ? existingSymbol.display : ''}" placeholder="如：[]">
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_symbol_cursor">光标位置：</label>
+                        <select id="custom_symbol_cursor">
+                            <option value="start" ${existingSymbol && existingSymbol.cursorPos === 'start' ? 'selected' : ''}>开始</option>
+                            <option value="middle" ${!existingSymbol || existingSymbol.cursorPos === 'middle' ? 'selected' : ''}>中间</option>
+                            <option value="end" ${existingSymbol && existingSymbol.cursorPos === 'end' ? 'selected' : ''}>结尾</option>
+                            <option value="custom" ${existingSymbol && !['start', 'middle', 'end'].includes(existingSymbol.cursorPos) ? 'selected' : ''}>自定义</option>
+                        </select>
+                        <input type="number" id="custom_symbol_cursor_pos" value="${existingSymbol && !['start', 'middle', 'end'].includes(existingSymbol.cursorPos) ? existingSymbol.cursorPos : '1'}" min="0" style="display: ${existingSymbol && !['start', 'middle', 'end'].includes(existingSymbol.cursorPos) ? 'inline-block' : 'none'}; width: 60px;">
+                    </div>
+                </div>
+                <div class="custom-symbol-buttons">
+                    <button id="custom_symbol_cancel">取消</button>
+                    <button id="custom_symbol_save">保存</button>
+                </div>
+            </div>
+        </div>
+    `);
+    
+    // 添加到页面
+    $("body").append(dialog);
+    
+    // 处理自定义光标位置选择
+    $("#custom_symbol_cursor").on("change", function() {
+        if ($(this).val() === "custom") {
+            $("#custom_symbol_cursor_pos").show();
+        } else {
+            $("#custom_symbol_cursor_pos").hide();
+        }
+    });
+    
+    // 取消按钮事件
+    $("#custom_symbol_cancel").on("click", function() {
+        dialog.remove();
+    });
+    
+    // 保存按钮事件
+    $("#custom_symbol_save").on("click", function() {
+        const name = $("#custom_symbol_name").val().trim();
+        const symbol = $("#custom_symbol_symbol").val();
+        const display = $("#custom_symbol_display").val() || symbol;
+        let cursorPos = $("#custom_symbol_cursor").val();
+        
+        if (cursorPos === "custom") {
+            cursorPos = $("#custom_symbol_cursor_pos").val();
+        }
+        
+        // 验证输入
+        if (!name || !symbol) {
+            alert("请输入名称和符号！");
+            return;
+        }
+        
+        // 创建符号对象
+        const symbolObj = {
+            name: name,
+            symbol: symbol,
+            display: display,
+            cursorPos: cursorPos
+        };
+        
+        // 保存到设置
+        if (editIndex >= 0) {
+            // 编辑现有符号
+            extension_settings[extensionName].customSymbols[editIndex] = symbolObj;
+        } else {
+            // 添加新符号
+            if (!extension_settings[extensionName].customSymbols) {
+                extension_settings[extensionName].customSymbols = [];
+            }
+            extension_settings[extensionName].customSymbols.push(symbolObj);
+        }
+        
+        // 保存设置
+        saveSettingsDebounced();
+        
+        // 重新加载自定义按钮
+        loadCustomSymbolButtons();
+        
+        // 关闭对话框
+        dialog.remove();
+    });
+}
+
 // 初始化插件
 jQuery(async () => {
     // 加载HTML
@@ -692,6 +984,18 @@ jQuery(async () => {
     if (!extension_settings[extensionName].enabled) {
         $("#input_helper_toolbar").hide();
     }
+    
+    // 添加添加自定义符号按钮
+    $("#integrated_button_settings").after(`
+        <div class="example-extension_block">
+            <button id="add_custom_symbol_btn" class="menu_button">添加自定义符号</button>
+        </div>
+    `);
+    
+    // 添加自定义符号按钮事件
+    $("#add_custom_symbol_btn").on("click", function() {
+        showCustomSymbolDialog();
+    });
     
     console.log("输入助手插件已加载");
 });

@@ -307,3 +307,103 @@
 .prevent-keyboard-hide > button {
     pointer-events: auto;  /* 让里面的按钮可以接收指针事件 */
 }
+
+/* 自定义符号对话框样式 */
+.custom-symbol-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.custom-symbol-dialog-content {
+    background-color: var(--SmartThemeBodyColor);
+    color: var(--SmartThemeTextColor);
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+    padding: 20px;
+    width: 350px;
+    max-width: 90%;
+}
+
+.custom-symbol-form {
+    margin: 15px 0;
+}
+
+.form-group {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    width: 100px;
+    display: inline-block;
+}
+
+.form-group input, .form-group select {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    background-color: var(--SmartThemeInputColor);
+    color: var(--SmartThemeInputTextColor);
+    border-radius: 4px;
+}
+
+.custom-symbol-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.custom-symbol-buttons button {
+    padding: 5px 15px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    background-color: var(--SmartThemeBlurTintColor);
+    color: var(--SmartThemeBodyColor);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.custom-symbol-buttons button:hover {
+    background-color: var(--SmartThemeChatTintColor);
+}
+
+/* 自定义符号设置行样式 */
+.custom-edit-btn, .custom-delete-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.custom-edit-btn:hover, .custom-delete-btn:hover {
+    opacity: 1;
+}
+
+.custom-delete-btn {
+    color: rgba(255, 80, 80, 0.9);
+}
+
+/* 添加自定义符号按钮 */
+#add_custom_symbol_btn {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+}
