@@ -178,7 +178,10 @@ function updateToolbarButtonOrder() {
     
     // 按照保存的顺序重新排列工具栏按钮
     buttonOrder.forEach(key => {
+        // 防止空按钮ID
         const buttonId = getButtonIdFromKey(key);
+        if (!buttonId) return;
+        
         const button = $(`#${buttonId}`);
         if (button.length && extension_settings[extensionName].buttons[key] !== false) {
             toolbar.append(button);
@@ -188,6 +191,14 @@ function updateToolbarButtonOrder() {
 
 // 从按钮键名获取按钮ID
 function getButtonIdFromKey(key) {
+    // 检查是否是自定义按钮
+    if (key.startsWith('custom_')) {
+        // 直接返回自定义按钮的ID
+        const index = key.replace('custom_', '');
+        return `input_custom_${index}_btn`;
+    }
+    
+    // 预定义按钮的映射
     const keyToId = {
         'asterisk': 'input_asterisk_btn',
         'quotes': 'input_quotes_btn',
@@ -637,6 +648,9 @@ function createCustomSymbolButton(symbol, index) {
     const buttonId = `input_custom_${index}_btn`;
     const buttonKey = `custom_${index}`;
     
+    // 先检查是否已存在，如果存在则移除
+    $(`#${buttonId}`).remove();
+    
     // 创建按钮并添加到工具栏
     const button = $(`<button id="${buttonId}" class="input-helper-btn custom-symbol-button" title="${symbol.name}" data-norefocus="true" data-index="${index}">${symbol.display}</button>`);
     $("#input_helper_toolbar").append(button);
@@ -672,6 +686,9 @@ function bindCustomSymbolEvent(button, symbol) {
 // 创建自定义符号设置项
 function createCustomSymbolSetting(symbol, index) {
     const buttonKey = `custom_${index}`;
+    
+    // 先检查是否已存在，如果存在则移除
+    $(`.integrated-button-row[data-button-key="${buttonKey}"]`).remove();
     
     // 创建设置行
     const row = $(`
@@ -765,6 +782,9 @@ function deleteCustomSymbol(index) {
         
         // 从按钮显示设置中删除
         delete extension_settings[extensionName].buttons[buttonKey];
+        
+        // 从工具栏中删除
+        $(`#input_custom_${index}_btn`).remove();
         
         // 保存设置
         saveSettingsDebounced();
